@@ -1,0 +1,1 @@
+module.exports = { name: 'fact', execute: () => 'Did you know? The moon has moonquakes!' };

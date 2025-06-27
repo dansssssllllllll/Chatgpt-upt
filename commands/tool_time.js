@@ -1,0 +1,1 @@
+module.exports = { name: 'time', execute: () => 'Current time: ' + new Date().toLocaleTimeString() };

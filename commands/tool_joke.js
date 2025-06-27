@@ -1,0 +1,1 @@
+module.exports = { name: 'joke', execute: () => 'Why did the robot go on vacation? Because it had too many bytes!' };

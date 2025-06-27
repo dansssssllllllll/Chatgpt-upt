@@ -1,0 +1,1 @@
+module.exports = { name: 'tip', execute: () => 'Study in short intervals and take breaks to stay focused!' };

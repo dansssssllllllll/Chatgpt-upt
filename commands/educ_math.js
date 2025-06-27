@@ -1,0 +1,1 @@
+module.exports = { name: 'math', execute: () => '2 + 2 = 4. Math is fun!' };
