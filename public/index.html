@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fancy ChatBot</title>
+  <style>
+    body { font-family: sans-serif; background: #eef1f5; margin: 0; padding: 0; }
+    .chat-container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .message { padding: 10px 15px; margin: 10px; border-radius: 20px; max-width: 70%; animation: fadeIn 0.5s; }
+    .user { background-color: #4caf50; color: white; align-self: flex-end; margin-left: auto; }
+    .bot { background-color: #ffffff; border: 1px solid #ccc; margin-right: auto; }
+    .chat-box { display: flex; flex-direction: column; gap: 10px; }
+    input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; margin-top: 10px; }
+    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-box" id="chatBox"></div>
+    <input type="text" id="userInput" placeholder="Type a message..." />
+  </div>
+  <script>
+    const input = document.getElementById('userInput');
+    const box = document.getElementById('chatBox');
+    const chatHistory = JSON.parse(localStorage.getItem('chat') || '[]');
+    chatHistory.forEach(msg => addMessage(msg.text, msg.from));
+
+    function addMessage(text, from) {
+      const msg = document.createElement('div');
+      msg.className = 'message ' + from;
+      msg.innerText = text;
+      box.appendChild(msg);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendMessage(text) {
+      addMessage(text, 'user');
+      saveChat(text, 'user');
+      const res = await fetch('/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+      addMessage(data.reply, 'bot');
+      saveChat(data.reply, 'bot');
+    }
+
+    function saveChat(text, from) {
+      chatHistory.push({ text, from });
+      localStorage.setItem('chat', JSON.stringify(chatHistory));
+    }
+
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        sendMessage(input.value.trim());
+        input.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
